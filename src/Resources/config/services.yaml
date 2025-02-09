@@ -1,0 +1,4 @@
+services:
+  SmartlabsAT\SuluImageCropContentType\Sulu\ContentType\ImageCropContentType:
+    tags:
+      - { name: sulu.content.type, alias: image_crop }

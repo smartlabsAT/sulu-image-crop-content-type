@@ -1,0 +1,18 @@
+{
+  "name": "sulu-smartlabsat-image-crop-bundle",
+  "version": "1.0.0",
+  "description": "An open-source Sulu bundle providing a custom image crop content type with an integrated React component for intuitive image cropping.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smartlabsAT/sulu-image-crop-content-type.git"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "peerDependencies": {
+    "sulu-admin-bundle": "*",
+    "sulu-page-bundle": "*"
+  }
+}

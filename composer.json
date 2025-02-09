@@ -1,0 +1,32 @@
+{
+  "name": "smartlabsat/sulu-image-crop-content-type",
+  "description": "An open-source Sulu bundle providing a custom image crop content type with an integrated React component for intuitive image cropping.",
+  "type": "sulu-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "company": "Smartlabs AT",
+      "name": "Christopher Schwarz",
+      "email": "christopher@smartlabs.at"
+    }
+  ],
+  "require": {
+    "php": ">=8.2",
+    "sulu/sulu": "^2.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "SmartlabsAT\\SuluImageCropContentType\\": "src/"
+    }
+  },
+  "extra": {
+    "symfony": {
+      "bundles": {
+        "SmartlabsAT\\SuluImageCropContentType\\SmartlabsATSuluImageCropContentTypeBundle": { "all": true }
+      }
+    },
+    "branch-alias": {
+      "dev-main": "dev-main"
+    }
+  }
+}
