@@ -22,33 +22,33 @@ This bundle allows you to seamlessly **select**, **crop**, and **manage** images
 ### **Require the bundle**
 
 ```bash
-   composer require smartlabsat/sulu-image-crop-content-type
+composer require smartlabsat/sulu-image-crop-content-type
 ```
 
 ### Create or update your frontend build
 
 #### If you haven't created an admin folder yet:
 ```bash
-    mkdir -p assets/admin
+mkdir -p assets/admin
 ```
 
 ### Download Sulu's Admin build
 
 ```bash 
-    bin/console sulu:admin:download-build
+bin/console sulu:admin:download-build
 ```
 
 ``` bash
-    cd assets/admin
+cd assets/admin
 ```
 
 ```bash
-    npm install
+npm install
 ```
 
 ### Link the local JS bundle from the vendor folder
 ```bash
-    npm install file:../../vendor/smartlabsat/sulu-image-crop-content-type/Resources/js
+npm install file:../../vendor/smartlabsat/sulu-image-crop-content-type/Resources/js
 ```
 
 ### Import the bundle in /assets/admin/app.js
@@ -62,7 +62,7 @@ import 'sulu-smartlabsat-image-crop-bundle';
 ### Build 
 Build your admin assets
 ```bash
-   npm run build
+npm run build
 ```
 
 
