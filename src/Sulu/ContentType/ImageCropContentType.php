@@ -147,12 +147,7 @@ class ImageCropContentType implements ContentTypeInterface
     $nodeValue = $node->getPropertyValue($propertyName);
 
     // Check if this property is multi-value (an array).
-    $isMultiple = false;
-    if (method_exists($property, 'isMultiple')) {
-      $isMultiple = $property->isMultiple();
-    } elseif (method_exists($property, 'getIsMultiple')) {
-      $isMultiple = $property->getIsMultiple();
-    }
+    $isMultiple = $this->isMultipleProperty($property);
 
     if ($isMultiple) {
       // MULTI-VALUE CASE
@@ -168,11 +163,15 @@ class ImageCropContentType implements ContentTypeInterface
         return;
       }
 
-      $decoded = json_decode($rawJson, true);
-      if (!is_array($decoded)) {
+      try {
+        $decoded = json_decode($rawJson, true, 512, JSON_THROW_ON_ERROR);
+      } catch (\JsonException $e) {
         $decoded = [];
       }
-      $property->setValue($decoded);
+      
+      // Validate the decoded data
+      $validated = $this->validateMediaData($decoded);
+      $property->setValue($validated);
     } else {
       // SINGLE-VALUE CASE
       if (is_array($nodeValue)) {
@@ -185,11 +184,15 @@ class ImageCropContentType implements ContentTypeInterface
         return;
       }
 
-      $decoded = json_decode($nodeValue, true);
-      if (!is_array($decoded)) {
+      try {
+        $decoded = json_decode($nodeValue, true, 512, JSON_THROW_ON_ERROR);
+      } catch (\JsonException $e) {
         $decoded = [];
       }
-      $property->setValue($decoded);
+      
+      // Validate the decoded data
+      $validated = $this->validateMediaData($decoded);
+      $property->setValue($validated);
     }
   }
 
@@ -205,16 +208,20 @@ class ImageCropContentType implements ContentTypeInterface
     $propertyName = $property->getName();
 
     // In the admin, usually an array of values is provided.
-    $valueArray = $property->getValue() ?: [];
-    $jsonValue = json_encode($valueArray);
+    $rawValue = $property->getValue() ?: [];
+    
+    // Validate the data before encoding
+    $valueArray = $this->validateMediaData($rawValue);
+    
+    try {
+      $jsonValue = json_encode($valueArray, JSON_THROW_ON_ERROR);
+    } catch (\JsonException $e) {
+      // If encoding fails, save empty data
+      $jsonValue = '[]';
+    }
 
     // Check if multi-value.
-    $isMultiple = false;
-    if (method_exists($property, 'isMultiple')) {
-      $isMultiple = $property->isMultiple();
-    } elseif (method_exists($property, 'getIsMultiple')) {
-      $isMultiple = $property->getIsMultiple();
-    }
+    $isMultiple = $this->isMultipleProperty($property);
 
     if ($isMultiple) {
       // MULTI-VALUE: An array of strings is expected.
