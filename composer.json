@@ -3,6 +3,17 @@
   "description": "An open-source Sulu bundle providing a custom image crop content type with an integrated React component for intuitive image cropping.",
   "type": "sulu-bundle",
   "license": "MIT",
+  "keywords": [
+    "sulu",
+    "sulu-bundle",
+    "image-crop",
+    "content-type",
+    "cms",
+    "media",
+    "cropping",
+    "react"
+  ],
+  "homepage": "https://github.com/smartlabsAT/sulu-image-crop-content-type",
   "authors": [
     {
       "company": "Smartlabs AT",
@@ -10,14 +21,35 @@
       "email": "christopher@smartlabs.at"
     }
   ],
+  "support": {
+    "issues": "https://github.com/smartlabsAT/sulu-image-crop-content-type/issues",
+    "source": "https://github.com/smartlabsAT/sulu-image-crop-content-type"
+  },
   "require": {
     "php": ">=8.2",
     "sulu/sulu": "^2.6"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.0",
+    "friendsofphp/php-cs-fixer": "^3.0",
+    "phpstan/phpstan": "^1.0",
+    "phpstan/phpstan-symfony": "^1.0"
   },
   "autoload": {
     "psr-4": {
       "SmartlabsAT\\SuluImageCropContentType\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SmartlabsAT\\SuluImageCropContentType\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit",
+    "phpstan": "vendor/bin/phpstan analyse",
+    "cs-fix": "vendor/bin/php-cs-fixer fix --verbose",
+    "cs-check": "vendor/bin/php-cs-fixer fix --verbose --dry-run"
   },
   "extra": {
     "symfony": {
