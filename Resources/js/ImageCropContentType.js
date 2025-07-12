@@ -172,7 +172,7 @@ class ImageCropContentType extends React.Component {
 
     const locale = formInspector?.locale?.get() || 'en';
     const editUrl = `/admin/#/media/${locale}/${media.id}/details`;
-    window.open(editUrl, '_blank');
+    window.open(editUrl, '_blank', 'noopener,noreferrer');
   };
 
   @action handleRefresh = async () => {
