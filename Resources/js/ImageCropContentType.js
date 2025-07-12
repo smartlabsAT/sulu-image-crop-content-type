@@ -46,6 +46,13 @@ class ImageCropContentType extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    // Clean up the SingleSelectionStore to prevent memory leaks
+    if (this.singleSelectionStore && typeof this.singleSelectionStore.destroy === 'function') {
+      this.singleSelectionStore.destroy();
+    }
+  }
+
   @action handleOpenOverlay = () => {
     this.overlayOpen = true;
   };
