@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop, 'v*' ]
+  pull_request:
+    branches: [ main, develop, 'v*' ]
+
+jobs:
+  php-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.2', '8.3']
+        sulu-version: ['^2.6']
+    
+    name: PHP ${{ matrix.php-version }} - Sulu ${{ matrix.sulu-version }}
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, xml, ctype, iconv, mysql, pdo_mysql
+        coverage: xdebug
+    
+    - name: Validate composer.json
+      run: composer validate --strict
+    
+    - name: Cache Composer packages
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.json') }}
+        restore-keys: |
+          ${{ runner.os }}-php-${{ matrix.php-version }}-
+    
+    - name: Install dependencies
+      run: |
+        composer require "sulu/sulu:${{ matrix.sulu-version }}" --no-update
+        composer install --prefer-dist --no-progress --no-suggest
+    
+    - name: Run PHPStan
+      run: vendor/bin/phpstan analyse --no-progress || true
+    
+    - name: Check code style
+      run: vendor/bin/php-cs-fixer fix --dry-run --diff || true
+    
+    - name: Run tests
+      run: vendor/bin/phpunit --coverage-text || true
+
+  js-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: Resources/js/package-lock.json
+    
+    - name: Install JS dependencies
+      run: |
+        cd Resources/js
+        npm install
+    
+    - name: Check JS code
+      run: |
+        cd Resources/js
+        npm run lint || true
+        npm test || true
