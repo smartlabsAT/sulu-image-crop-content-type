@@ -223,7 +223,7 @@ class ImageCropContentType extends React.Component {
               }}
             >
               <p style={{ margin: 0 }}>
-                <strong>{media.title}</strong>
+                <strong>{escapeHtml(media.title)}</strong>
               </p>
               <div
                 style={{
@@ -258,7 +258,7 @@ class ImageCropContentType extends React.Component {
                 <img
                   onClick={this.handleOpenOverlay}
                   src={imageSrc}
-                  alt={media.title || ''}
+                  alt={escapeHtml(media.title) || ''}
                   style={{
                     maxWidth: '100%',
                     border: '1px solid #ccc',
