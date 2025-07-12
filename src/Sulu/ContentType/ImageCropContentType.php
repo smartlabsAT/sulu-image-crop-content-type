@@ -24,6 +24,109 @@ class ImageCropContentType implements ContentTypeInterface
     return $this->name;
   }
 
+  /**
+   * Validates media data structure to prevent injection attacks
+   * 
+   * @param mixed $data The data to validate
+   * @return array The validated and sanitized data
+   */
+  private function validateMediaData($data): array
+  {
+    // Ensure data is an array
+    if (!is_array($data)) {
+      return ['media' => null];
+    }
+    
+    // Define allowed top-level fields
+    $allowedFields = ['media', 'lastCropVersion'];
+    $validated = [];
+    
+    // Only process allowed fields
+    foreach ($allowedFields as $field) {
+      if (isset($data[$field])) {
+        $validated[$field] = $data[$field];
+      }
+    }
+    
+    // Validate media object
+    if (isset($validated['media'])) {
+      if ($validated['media'] === null) {
+        // Null is allowed (no media selected)
+        return $validated;
+      }
+      
+      if (!is_array($validated['media'])) {
+        $validated['media'] = null;
+        return $validated;
+      }
+      
+      // Check if ID exists and is numeric
+      if (!isset($validated['media']['id']) || !is_numeric($validated['media']['id'])) {
+        $validated['media'] = null;
+        return $validated;
+      }
+      
+      // Define allowed media fields
+      $allowedMediaFields = ['id', 'title', 'thumbnails', 'url', 'adminUrl'];
+      $cleanMedia = [];
+      
+      foreach ($allowedMediaFields as $field) {
+        if (isset($validated['media'][$field])) {
+          switch ($field) {
+            case 'id':
+              $cleanMedia[$field] = (int) $validated['media'][$field];
+              break;
+            case 'title':
+              // Remove HTML tags and trim
+              $cleanMedia[$field] = strip_tags(trim($validated['media'][$field]));
+              break;
+            case 'thumbnails':
+              // Only allow arrays
+              if (is_array($validated['media'][$field])) {
+                $cleanMedia[$field] = $validated['media'][$field];
+              }
+              break;
+            case 'url':
+            case 'adminUrl':
+              // Basic URL validation - just ensure it's a string
+              if (is_string($validated['media'][$field])) {
+                $cleanMedia[$field] = $validated['media'][$field];
+              }
+              break;
+            default:
+              $cleanMedia[$field] = $validated['media'][$field];
+          }
+        }
+      }
+      
+      $validated['media'] = $cleanMedia;
+    }
+    
+    // Validate lastCropVersion if present
+    if (isset($validated['lastCropVersion']) && !is_string($validated['lastCropVersion'])) {
+      unset($validated['lastCropVersion']);
+    }
+    
+    return $validated;
+  }
+
+  /**
+   * Helper method to check if property is multiple
+   * 
+   * @param PropertyInterface $property
+   * @return bool
+   */
+  private function isMultipleProperty(PropertyInterface $property): bool
+  {
+    if (method_exists($property, 'isMultiple')) {
+      return $property->isMultiple();
+    }
+    if (method_exists($property, 'getIsMultiple')) {
+      return $property->getIsMultiple();
+    }
+    return false;
+  }
+
   #[Description("Reads the value from the node. NOTE: We do NOT write anything back to the node here to avoid multi-value errors!")]
   public function read(
     NodeInterface $node,
