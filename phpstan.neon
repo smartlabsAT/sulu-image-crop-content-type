@@ -1,0 +1,11 @@
+parameters:
+    level: 6
+    paths:
+        - src
+    excludePaths:
+        - src/Resources
+    ignoreErrors:
+        # Ignore Sulu specific errors that PHPStan might not understand
+        - '#Call to an undefined method Sulu\\Component\\Content\\Compat\\PropertyInterface::(isMultiple|getIsMultiple)\(\)#'
+    symfony:
+        container_xml_path: var/cache/dev/App_KernelDevDebugContainer.xml
