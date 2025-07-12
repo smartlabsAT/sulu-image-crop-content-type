@@ -8,6 +8,17 @@ import Icon from 'sulu-admin-bundle/components/Icon';
 import SingleMediaSelectionOverlay from 'sulu-media-bundle/containers/SingleMediaSelectionOverlay';
 import Tooltip from 'sulu-admin-bundle/components/Tooltip/Tooltip';
 
+// HTML escaping function to prevent XSS attacks
+function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 @observer
 class ImageCropContentType extends React.Component {
   @observable overlayOpen = false;
